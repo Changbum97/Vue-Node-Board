@@ -1,6 +1,7 @@
 var router = require('express').Router();
 var mysql = require('mysql2');
 var db = require('.././models');
+var Op = require('sequelize').Op;   // 검색 기능을 위해 사용
 db.sequelize.sync();
 
 router.post('/write', function(req, res){		// 글 작성
@@ -89,4 +90,49 @@ router.post('/edit', function(req, res){		// 게시글 수정
         return res.status(404).json({message: '에러뜸'});
     })
 });
+
+// 검색 기능
+router.post('/search', function(req, res){
+    if(req.body.searchoption == '제목'){	// searchoption이 '제목'일 때
+        db.content.findAndCountAll({
+            where: {
+                title: {
+                    [Op.like]: "%"+req.body.searchkeyword+"%"
+                    // "%" + [단어] + "%"를 통해 [단어]가 포함된 모든것 검색 가능
+                },
+            },
+            order: [['id', 'ASC']],
+            raw: true,
+        }).then(result => {
+            var cnt = new Object();
+            cnt.cnt = result.count;
+            result.rows.push(cnt);
+            console.log(result.rows);
+            return res.status(200).json(result.rows);
+        }).catch(err => {
+            console.log(err);
+            return res.status(404).json({message: '에러뜸'});
+        })
+    } else {	// searchoption이 '작성자'일 때
+        db.content.findAndCountAll({
+            where: {
+                writer: {
+                    [Op.like]: "%"+req.body.searchkeyword+"%"
+                },
+            },
+            order: [['id', 'ASC']],
+            raw: true,
+        }).then(result => {
+            var cnt = new Object();
+            cnt.cnt = result.count;
+            result.rows.push(cnt);
+            console.log(result.rows);
+            return res.status(200).json(result.rows);
+        }).catch(err => {
+            console.log(err);
+            return res.status(404).json({message: '에러뜸'});
+        })
+    }
+});
+
 module.exports = router;
