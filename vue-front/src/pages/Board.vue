@@ -4,7 +4,8 @@
       <v-spacer></v-spacer>
       <v-app-bar-title>
         <div align="center" :style="{fontSize:'xx-large'} ">게시판 {{$route.params.id}}</div>
-        <!-- params를 받아올 때는 $route.params.id, query를 받아올 때는 $route.query.id 이런 형식으로 받아옴 -->
+        <!-- params를 받아올 때는 $route.params.id,
+        		query를 받아올 때는 $route.query.id 이런 형식으로 받아옴 -->
       </v-app-bar-title>
       <v-spacer></v-spacer>
     </v-app-bar>
@@ -119,8 +120,7 @@ export default {
       // window.location.pathname이 현재 주소를 의미
       // 여기다 write를 붙여주면 글 작성 페이지로 라우팅 되게 됨
     },
-    movetocontent(id) {
-      // 클릭된 글의 id를 받아와야 라우팅할때 보낼 수 있음
+    movetocontent(id) {		// 클릭된 글의 id를 받아와야 라우팅할때 보낼 수 있음
       window.location.href = window.location.pathname + 'content?id=' + id
     },
     movetopreviouspage(){

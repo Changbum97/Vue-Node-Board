@@ -15,20 +15,16 @@ const router = new VueRouter({
   mode: 'history',
   routes: [
     {
-      // 메인 페이지
-      path:'/',
+      path:'/',				// 메인 페이지
       component: MainPage,
     }, {
-      // 게시판 1,2,3 구분
-      path: '/board/:boardId',
+      path: '/board/:id',			// 게시판 1,2,3 구분
       component: BoardPage,
     }, {
-      // 글 작성 페이지
-      path: '/board/:id/write',
+      path: '/board/:id/write',		// 글 작성 페이지
       component: WritePage,
     }, {
-      // 글 내용 보는 페이지
-      path: '/board/:id/content',
+      path: '/board/:id/content',		// 글 내용 보는 페이지
       component: ContentPage,
     }
   ]
