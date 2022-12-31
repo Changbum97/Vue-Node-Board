@@ -1,24 +1,25 @@
-# vue-front
+# Vue.js를 사용한 Front Server 구현
 
 ## Project setup
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+## Compiles and hot-reloads for development
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
-```
-npm run build
-```
+## 사용 모듈 및 버전
 
-### Lints and fixes files
-```
-npm run lint
-```
+- vue : 2.6.14
+- vuetify : 2.6.13
+- vue-router : 3.5.3
+- axios : 1.2.2
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## 구현 페이지
+
+- Main.Vue : 메인 화면 (게시판 1, 2, 3으로 이동 가능 + 검색 기능)
+- Board.Vue : 게시판 1, 2, 3에 해당하는 글 리스트 출력 페이지
+- Content.Vue : 작성 글 조회 및 수정, 삭제 가능한 페이지
+- Write.Vue : 글 작성 페이지
