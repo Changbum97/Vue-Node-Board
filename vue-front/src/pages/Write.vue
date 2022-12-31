@@ -23,6 +23,14 @@
                 <v-text-field v-model="title" dense outlined label="제목" style="width: 500px; margin-left: 100px;"
                               :rules="[v => !!v || '제목은 필수입니다.']"></v-text-field>
                 <v-textarea v-model="text" label="내용" outlined rows="13" style="width: 730px; margin-left: 100px;"></v-textarea>
+
+                <!-- 이미지 업로드 -->
+                <v-file-input class="input" type="file" counter show-size label="이미지 제출(여러개 가능)"
+                              outlined dense multiple prepend-icon="mdi-camera" style="width: 400px; margin-left: 100px;"
+                              @change="onImageChange"/>
+                <v-img v-for="(item,i) in uploadimageurl" :key="i" :src="item.url"
+                       contain height="150px" width="200px" style="border: 2px solid black; margin-left:100px;"/>
+
                 <v-btn width="100px" style="margin-left: 600px; margin-bottom:30px;" @click="moveback">취소</v-btn>
                 <v-btn width="100px" style="margin-left: 30px; margin-bottom:30px;" type="submit">제출</v-btn>
               </v-form>
@@ -44,6 +52,8 @@ export default {
       writer: '',
       title: '',
       text: '',
+      uploadimageurl: [],	// 업로드한 이미지의 미리보기 기능을 위해 url 저장하는 객체
+      imagecnt: 0,		// 업로드한 이미지 개수 => 제출버튼 클릭시 back서버와 axios 통신하게 되는데, 이 때 이 값도 넘겨줌
     }
   },
   methods: {
@@ -57,6 +67,7 @@ export default {
             writer: this.writer,
             title: this.title,
             text: this.text,
+            imagecnt: this.imagecnt
           },
         }).then(res => {
           alert(res.data.message);
@@ -71,6 +82,34 @@ export default {
     },
     movetomain() {
       window.location.href='/';
+    },
+    // 이미지 업로드
+    onImageChange(file) {	// v-file-input 변경시
+      if (!file) {
+        return;
+      }
+      const formData = new FormData();	// 파일을 전송할때는 FormData 형식으로 전송
+      this.uploadimageurl = [];		// uploadimageurl은 미리보기용으로 사용
+      file.forEach((item) => {
+        formData.append('filelist', item)	// formData의 key: 'filelist', value: 이미지
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.uploadimageurl.push({url: e.target.result});
+          // e.target.result를 통해 이미지 url을 가져와서 uploadimageurl에 저장
+        };
+        reader.readAsDataURL(item);
+      });
+      axios({
+        url: "http://127.0.0.1:52273/content/imagesave/",	// 이미지 저장을 위해 back서버와 통신
+        method: "POST",
+        headers: {'Content-Type': 'multipart/form-data'},	// 이걸 써줘야 formdata 형식 전송가능
+        data: formData,
+      }).then(res => {
+        console.log(res.data.message);
+        this.imagecnt = file.length;	// 이미지 개수 저장
+      }).catch(err => {
+        alert(err);
+      });
     },
   },
 };

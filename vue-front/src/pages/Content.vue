@@ -31,6 +31,9 @@
               <v-btn width="100px" style="margin-left: 30px; margin-bottom:20px;" @click="editcontentfinish"
                      v-if="editable===true">수정완료</v-btn>
               <v-btn width="100px" style="margin-left: 30px; margin-bottom:20px;" @click="deletecontent">삭제</v-btn>
+              <!-- 이미지 출력 -->
+              <v-img v-for="(item, i) in imagelist" :key="i" :src="require(`../../../node-back/uploads/${item}`)"
+                     contain height="150px" width="200px" style="border: 2px solid black; margin-left:100px;"/>
             </v-card>
           </v-col>
           <v-col cols="12" md="1"/>
@@ -52,6 +55,8 @@ export default {
       updatedAt: '',		// 최근 수정일
       text: '',			// 글 내용
       editable: false,		// 수정가능여부 (수정 버튼누르면 true로 바뀜)
+      imagelist: [],		// 불러온 이미지들의 url을 저장하는 객체
+      imagecnt: 0,		// 불러올 이미지 개수 (db에서 받아옴)
     }
   },
   mounted() {
@@ -64,9 +69,14 @@ export default {
     }).then(res => {
       this.writer = res.data.writer;
       this.title = res.data.title;
-      this.createdAt = res.data.createdAt.split('T')[0];
+      this.createdAt = res.data.createdAt.split('T')[0] ;
       this.updatedAt = res.data.updatedAt.split('T')[0];
       this.text = res.data.text;
+      this.imagecnt = res.data.imagecnt;	// db에서 새로운 field인 imagecnt 값도 받아옴
+      for(var i = 1; i <= res.data.imagecnt; i++){
+        this.imagelist.push(this.$route.query.id + '-' + i + '.png');
+        // 이미지를 저장할 때, '글id - 1.png', '글id - 2.png', ... 이런식으로 저장할 것임
+      }
     }).catch(err => {
       alert(err);
     });
@@ -111,6 +121,7 @@ export default {
     movetomain() {
       window.location.href='/';
     },
+
   },
 };
 </script>
